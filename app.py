@@ -5,8 +5,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from datetime import datetime
-# Import baseline and statistical models
-from traffic_models import NaiveBaseline, SpatialRegression, ARIMAModel, ProphetModel
 
 # Import all the model classes from your main code
 # (Paste the synthetic generator, graph builder, physics embedder, and models here)
@@ -28,7 +26,7 @@ st.set_page_config(
 def show_project_info():
     """Display project problem statement and proposed solution"""
     st.markdown("""
-    # 🚦 Traffic Flow Prediction System 
+    # 🚦 Traffic Flow Prediction System - Phase 1
 
     ## Problem Statement
     
@@ -45,7 +43,11 @@ def show_project_info():
     - Physics-aware modeling of traffic dynamics
     - Real-time adaptability to changing conditions
     
-    
+    **Key Questions:**
+    - Can we predict traffic flow accurately 5-15 minutes ahead?
+    - How much do advanced deep learning models help vs. simple baselines?
+    - Can we optimize signal timing based on predictions?
+    - What's the trade-off between model complexity and performance?
     
     ---
     
@@ -292,8 +294,13 @@ def calculate_metrics(predictions, targets):
 
 # ==================== STREAMLIT APP ====================
 def main():
-    st.title("🚦 Traffic Flow Prediction Models Comparison")
-    st.markdown("Model Comparison Dashboard")
+    st.set_page_config(
+        page_title="Real-Time Analytics on Spatio-Temporal Vehicle Graphs",
+        page_icon="🚗",
+        layout="wide"
+    )
+    st.title("🚗 Real-Time Analytics on Spatio-Temporal Vehicle Graphs")
+    st.markdown("Phase 1: Advanced Model Comparison Dashboard")
     
     # Sidebar navigation
     page = st.sidebar.radio(
@@ -360,7 +367,7 @@ def main():
                          f"vs Naive baseline")
     
     elif page == "Visualizations":
-        st.header("Model Performance Visualizations")
+        st.header("📊 Model Performance Visualizations")
         
         if 'results' not in st.session_state:
             st.warning("Please run comparison first")
@@ -379,51 +386,87 @@ def main():
                 })
         df_results = pd.DataFrame(comparison_data)
         
-        # 1. Metrics Comparison - 4 Subplots
-        col1, col2 = st.columns(2)
+        # Visualization Selection
+        st.subheader("Select Visualizations to Display")
+        viz_options = st.multiselect(
+            "Choose visualizations:",
+            [
+                "Performance Comparison (4-Panel)",
+                "Radar Chart",
+                "PG-STGNN Predictions vs Actual",
+                "Error Distribution",
+                "Model Ranking",
+                "Metric Heatmap",
+                "Box Plot Comparison",
+                "Time Series Comparison"
+            ],
+            default=["Performance Comparison (4-Panel)", "PG-STGNN Predictions vs Actual"]
+        )
         
-        with col1:
-            fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+        # 1. Performance Comparison - 4 Subplots
+        if "Performance Comparison (4-Panel)" in viz_options:
+            st.subheader("1️⃣ Performance Metrics Comparison (4-Panel)")
+            
+            fig, axes = plt.subplots(2, 2, figsize=(16, 10))
             fig.suptitle('Model Performance Comparison', fontsize=16, fontweight='bold')
+            
+            colors = ['#d62728' if 'PG-STGNN' in m else '#1f77b4' for m in df_results['Model']]
             
             # MAE
             ax = axes[0, 0]
-            colors = ['#d62728' if 'PG-STGNN' in m else '#1f77b4' for m in df_results['Model']]
-            ax.barh(df_results['Model'], df_results['MAE'], color=colors)
-            ax.set_xlabel('MAE')
-            ax.set_title('Mean Absolute Error')
+            bars = ax.barh(df_results['Model'], df_results['MAE'], color=colors)
+            ax.set_xlabel('MAE', fontweight='bold')
+            ax.set_title('Mean Absolute Error (Lower is Better)', fontweight='bold')
             ax.grid(axis='x', alpha=0.3)
+            for i, bar in enumerate(bars):
+                width = bar.get_width()
+                ax.text(width, bar.get_y() + bar.get_height()/2, f' {width:.4f}',
+                       ha='left', va='center', fontsize=9)
             
             # RMSE
             ax = axes[0, 1]
-            ax.barh(df_results['Model'], df_results['RMSE'], color=colors)
-            ax.set_xlabel('RMSE')
-            ax.set_title('Root Mean Square Error')
+            bars = ax.barh(df_results['Model'], df_results['RMSE'], color=colors)
+            ax.set_xlabel('RMSE', fontweight='bold')
+            ax.set_title('Root Mean Square Error (Lower is Better)', fontweight='bold')
             ax.grid(axis='x', alpha=0.3)
+            for i, bar in enumerate(bars):
+                width = bar.get_width()
+                ax.text(width, bar.get_y() + bar.get_height()/2, f' {width:.4f}',
+                       ha='left', va='center', fontsize=9)
             
             # MAPE
             ax = axes[1, 0]
-            ax.barh(df_results['Model'], df_results['MAPE'], color=colors)
-            ax.set_xlabel('MAPE (%)')
-            ax.set_title('Mean Absolute Percentage Error')
+            bars = ax.barh(df_results['Model'], df_results['MAPE'], color=colors)
+            ax.set_xlabel('MAPE (%)', fontweight='bold')
+            ax.set_title('Mean Absolute Percentage Error (Lower is Better)', fontweight='bold')
             ax.grid(axis='x', alpha=0.3)
+            for i, bar in enumerate(bars):
+                width = bar.get_width()
+                ax.text(width, bar.get_y() + bar.get_height()/2, f' {width:.2f}%',
+                       ha='left', va='center', fontsize=9)
             
             # R²
             ax = axes[1, 1]
-            ax.barh(df_results['Model'], df_results['R²'], color=colors)
-            ax.set_xlabel('R²')
-            ax.set_title('R² Score')
+            bars = ax.barh(df_results['Model'], df_results['R²'], color=colors)
+            ax.set_xlabel('R²', fontweight='bold')
+            ax.set_title('R² Score (Higher is Better)', fontweight='bold')
             ax.set_xlim([-0.1, 1.1])
             ax.grid(axis='x', alpha=0.3)
+            for i, bar in enumerate(bars):
+                width = bar.get_width()
+                ax.text(width, bar.get_y() + bar.get_height()/2, f' {width:.4f}',
+                       ha='left', va='center', fontsize=9)
             
             plt.tight_layout()
             st.pyplot(fig)
         
-        with col2:
-            # 2. Radar Chart
+        # 2. Radar Chart
+        if "Radar Chart" in viz_options:
+            st.subheader("2️⃣ Multi-Metric Performance Radar Chart")
+            
             from math import pi
             
-            fig, ax = plt.subplots(figsize=(8, 8), subplot_kw=dict(projection='polar'))
+            fig, ax = plt.subplots(figsize=(10, 10), subplot_kw=dict(projection='polar'))
             
             categories = ['MAE', 'RMSE', 'MAPE', 'R²']
             N = len(categories)
@@ -431,54 +474,259 @@ def main():
             angles = [n / float(N) * 2 * pi for n in range(N)]
             angles += angles[:1]
             
+            colors_radar = plt.cm.Set3(np.linspace(0, 1, len(df_results)))
+            
             for idx, model in enumerate(df_results['Model']):
                 values = [
-                    1 / (1 + df_results.loc[idx, 'MAE']),  # Inverse so higher is better
+                    1 / (1 + df_results.loc[idx, 'MAE']),
                     1 / (1 + df_results.loc[idx, 'RMSE']),
                     100 / (100 + df_results.loc[idx, 'MAPE']),
                     df_results.loc[idx, 'R²']
                 ]
                 values += values[:1]
                 
-                ax.plot(angles, values, 'o-', linewidth=2, label=model)
-                ax.fill(angles, values, alpha=0.15)
+                ax.plot(angles, values, 'o-', linewidth=2, label=model, color=colors_radar[idx])
+                ax.fill(angles, values, alpha=0.15, color=colors_radar[idx])
             
             ax.set_xticks(angles[:-1])
-            ax.set_xticklabels(categories)
+            ax.set_xticklabels(categories, size=12)
             ax.set_ylim(0, 1)
-            ax.legend(loc='upper right', bbox_to_anchor=(1.3, 1.1))
-            ax.set_title('Multi-Metric Performance Radar', size=14, pad=20)
+            ax.legend(loc='upper right', bbox_to_anchor=(1.3, 1.1), fontsize=10)
+            ax.set_title('Multi-Metric Performance Radar', size=14, pad=20, fontweight='bold')
             ax.grid(True)
             
             st.pyplot(fig)
         
-        # 3. Prediction vs Actual for PG-STGNN
-        if 'PG-STGNN_pred' in results:
-            st.subheader("PG-STGNN: Predictions vs Actual")
+        # 3. Error Distribution
+        if "Error Distribution" in viz_options:
+            st.subheader("3️⃣ Error Distribution Analysis")
             
-            fig, axes = plt.subplots(2, 1, figsize=(14, 8))
+            fig, axes = plt.subplots(2, 2, figsize=(16, 10))
+            fig.suptitle('Error Distribution Across Models', fontsize=14, fontweight='bold')
             
-            # First 50 samples
-            sample_range = slice(0, min(50, len(results['PG-STGNN_actual'])))
-            pred = results['PG-STGNN_pred'][sample_range].flatten()
-            actual = results['PG-STGNN_actual'][sample_range].flatten()
+            # MAE Distribution
+            ax = axes[0, 0]
+            ax.bar(range(len(df_results)), df_results['MAE'], color=colors, alpha=0.7, edgecolor='black')
+            ax.set_xticks(range(len(df_results)))
+            ax.set_xticklabels(df_results['Model'], rotation=45, ha='right')
+            ax.set_ylabel('MAE', fontweight='bold')
+            ax.set_title('MAE Distribution')
+            ax.grid(axis='y', alpha=0.3)
+            
+            # RMSE Distribution
+            ax = axes[0, 1]
+            ax.bar(range(len(df_results)), df_results['RMSE'], color=colors, alpha=0.7, edgecolor='black')
+            ax.set_xticks(range(len(df_results)))
+            ax.set_xticklabels(df_results['Model'], rotation=45, ha='right')
+            ax.set_ylabel('RMSE', fontweight='bold')
+            ax.set_title('RMSE Distribution')
+            ax.grid(axis='y', alpha=0.3)
+            
+            # MAPE Distribution
+            ax = axes[1, 0]
+            ax.bar(range(len(df_results)), df_results['MAPE'], color=colors, alpha=0.7, edgecolor='black')
+            ax.set_xticks(range(len(df_results)))
+            ax.set_xticklabels(df_results['Model'], rotation=45, ha='right')
+            ax.set_ylabel('MAPE (%)', fontweight='bold')
+            ax.set_title('MAPE Distribution')
+            ax.grid(axis='y', alpha=0.3)
+            
+            # R² Distribution
+            ax = axes[1, 1]
+            ax.bar(range(len(df_results)), df_results['R²'], color=colors, alpha=0.7, edgecolor='black')
+            ax.set_xticks(range(len(df_results)))
+            ax.set_xticklabels(df_results['Model'], rotation=45, ha='right')
+            ax.set_ylabel('R²', fontweight='bold')
+            ax.set_title('R² Distribution (Higher is Better)')
+            ax.grid(axis='y', alpha=0.3)
+            ax.axhline(y=0, color='black', linestyle='-', linewidth=0.8)
+            
+            plt.tight_layout()
+            st.pyplot(fig)
+        
+        # 4. Metric Heatmap
+        if "Metric Heatmap" in viz_options:
+            st.subheader("4️⃣ Metrics Heatmap")
+            
+            # Normalize metrics for better visualization
+            df_normalized = df_results.copy()
+            for col in ['MAE', 'RMSE', 'MAPE']:
+                df_normalized[col] = (df_normalized[col] - df_normalized[col].min()) / (df_normalized[col].max() - df_normalized[col].min())
+            # R² is already 0-1 scale
+            
+            fig, ax = plt.subplots(figsize=(10, 6))
+            
+            heatmap_data = df_normalized[['MAE', 'RMSE', 'MAPE', 'R²']].T
+            heatmap_data.columns = df_results['Model']
+            
+            sns.heatmap(heatmap_data, annot=True, fmt='.2f', cmap='RdYlGn_r', 
+                       cbar_kws={'label': 'Normalized Score'}, ax=ax, linewidths=0.5)
+            ax.set_title('Model Performance Heatmap (Normalized)', fontweight='bold', fontsize=12)
+            ax.set_ylabel('Metrics', fontweight='bold')
+            ax.set_xlabel('Models', fontweight='bold')
+            
+            st.pyplot(fig)
+        
+        # 5. Model Ranking
+        if "Model Ranking" in viz_options:
+            st.subheader("5️⃣ Model Rankings")
+            
+            col1, col2, col3, col4 = st.columns(4)
+            
+            with col1:
+                st.markdown("**Best MAE**")
+                mae_rank = df_results.nsmallest(3, 'MAE')[['Model', 'MAE']]
+                for idx, (_, row) in enumerate(mae_rank.iterrows(), 1):
+                    st.write(f"{idx}. {row['Model']}: {row['MAE']:.4f}")
+            
+            with col2:
+                st.markdown("**Best RMSE**")
+                rmse_rank = df_results.nsmallest(3, 'RMSE')[['Model', 'RMSE']]
+                for idx, (_, row) in enumerate(rmse_rank.iterrows(), 1):
+                    st.write(f"{idx}. {row['Model']}: {row['RMSE']:.4f}")
+            
+            with col3:
+                st.markdown("**Best MAPE**")
+                mape_rank = df_results.nsmallest(3, 'MAPE')[['Model', 'MAPE']]
+                for idx, (_, row) in enumerate(mape_rank.iterrows(), 1):
+                    st.write(f"{idx}. {row['Model']}: {row['MAPE']:.2f}%")
+            
+            with col4:
+                st.markdown("**Best R²**")
+                r2_rank = df_results.nlargest(3, 'R²')[['Model', 'R²']]
+                for idx, (_, row) in enumerate(r2_rank.iterrows(), 1):
+                    st.write(f"{idx}. {row['Model']}: {row['R²']:.4f}")
+        
+        # 6. Box Plot Comparison
+        if "Box Plot Comparison" in viz_options:
+            st.subheader("6️⃣ Box Plot Comparison")
+            
+            fig, axes = plt.subplots(1, 2, figsize=(14, 5))
+            
+            # Prepare data for box plots
+            error_data = []
+            model_labels = []
+            for _, row in df_results.iterrows():
+                error_data.extend([row['MAE'], row['RMSE']])
+                model_labels.extend([row['Model'], row['Model']])
             
             ax = axes[0]
-            ax.plot(actual, label='Actual', marker='o', alpha=0.7)
-            ax.plot(pred, label='Predicted', marker='x', alpha=0.7)
-            ax.set_title('First 50 Predictions')
-            ax.set_xlabel('Sample Index')
-            ax.set_ylabel('Traffic Flow (normalized)')
+            mae_data = [df_results[df_results['Model'] == m]['MAE'].values[0] for m in df_results['Model']]
+            rmse_data = [df_results[df_results['Model'] == m]['RMSE'].values[0] for m in df_results['Model']]
+            
+            bp = ax.boxplot([df_results['MAE'], df_results['RMSE']], 
+                           labels=['MAE', 'RMSE'],
+                           patch_artist=True)
+            for patch in bp['boxes']:
+                patch.set_facecolor('#9999ff')
+            ax.set_ylabel('Error Value', fontweight='bold')
+            ax.set_title('Error Metrics Box Plot')
+            ax.grid(axis='y', alpha=0.3)
+            
+            ax = axes[1]
+            ax.boxplot([df_results['MAPE'], df_results['R²']], 
+                      labels=['MAPE (%)', 'R²'],
+                      patch_artist=True)
+            for patch in bp['boxes']:
+                patch.set_facecolor('#ff9999')
+            ax.set_ylabel('Score', fontweight='bold')
+            ax.set_title('MAPE and R² Box Plot')
+            ax.grid(axis='y', alpha=0.3)
+            
+            plt.tight_layout()
+            st.pyplot(fig)
+        
+        # 7. Time Series Comparison
+        if "Time Series Comparison" in viz_options and 'PG-STGNN_pred' in results:
+            st.subheader("7️⃣ PG-STGNN Time Series Comparison")
+            
+            fig, axes = plt.subplots(2, 2, figsize=(16, 10))
+            
+            # Full series
+            ax = axes[0, 0]
+            actual = results['PG-STGNN_actual'].flatten()
+            pred = results['PG-STGNN_pred'].flatten()
+            ax.plot(actual, label='Actual', linewidth=2, alpha=0.8)
+            ax.plot(pred, label='Predicted', linewidth=2, alpha=0.8)
+            ax.set_title('Full Time Series Prediction')
+            ax.set_xlabel('Time Step', fontweight='bold')
+            ax.set_ylabel('Traffic Flow', fontweight='bold')
+            ax.legend()
+            ax.grid(True, alpha=0.3)
+            
+            # First 100 samples
+            ax = axes[0, 1]
+            sample_range = slice(0, min(100, len(actual)))
+            ax.plot(actual[sample_range], label='Actual', marker='o', markersize=3, alpha=0.7)
+            ax.plot(pred[sample_range], label='Predicted', marker='x', markersize=4, alpha=0.7)
+            ax.set_title('First 100 Time Steps')
+            ax.set_xlabel('Time Step', fontweight='bold')
+            ax.set_ylabel('Traffic Flow', fontweight='bold')
             ax.legend()
             ax.grid(True, alpha=0.3)
             
             # Scatter plot
-            ax = axes[1]
+            ax = axes[1, 0]
             ax.scatter(actual, pred, alpha=0.5, s=20)
-            ax.plot([actual.min(), actual.max()], [actual.min(), actual.max()], 'r--', lw=2)
-            ax.set_xlabel('Actual Values')
-            ax.set_ylabel('Predicted Values')
+            ax.plot([actual.min(), actual.max()], [actual.min(), actual.max()], 'r--', lw=2, label='Perfect Prediction')
+            ax.set_xlabel('Actual Values', fontweight='bold')
+            ax.set_ylabel('Predicted Values', fontweight='bold')
             ax.set_title('Prediction vs Actual Scatter Plot')
+            ax.legend()
+            ax.grid(True, alpha=0.3)
+            
+            # Error over time
+            errors = np.abs(actual - pred)
+            ax = axes[1, 1]
+            ax.plot(errors, color='red', alpha=0.7, linewidth=1.5)
+            ax.fill_between(range(len(errors)), errors, alpha=0.3, color='red')
+            ax.set_title('Prediction Error Over Time')
+            ax.set_xlabel('Time Step', fontweight='bold')
+            ax.set_ylabel('Absolute Error', fontweight='bold')
+            ax.grid(True, alpha=0.3)
+            
+            plt.tight_layout()
+            st.pyplot(fig)
+        
+        # 8. PG-STGNN Detailed Analysis
+        if "PG-STGNN Predictions vs Actual" in viz_options and 'PG-STGNN_pred' in results:
+            st.subheader("8️⃣ PG-STGNN Detailed Predictions vs Actual")
+            
+            fig, axes = plt.subplots(2, 1, figsize=(16, 10))
+            
+            actual = results['PG-STGNN_actual'].flatten()
+            pred = results['PG-STGNN_pred'].flatten()
+            
+            # First 50 samples
+            sample_range = slice(0, min(50, len(actual)))
+            ax = axes[0]
+            ax.plot(actual[sample_range], label='Actual', marker='o', linewidth=2, markersize=6, alpha=0.8)
+            ax.plot(pred[sample_range], label='Predicted', marker='x', linewidth=2, markersize=8, alpha=0.8)
+            ax.fill_between(range(len(actual[sample_range])), actual[sample_range], pred[sample_range], 
+                           alpha=0.2, color='gray')
+            ax.set_title('First 50 Predictions - PG-STGNN', fontweight='bold', fontsize=12)
+            ax.set_xlabel('Sample Index', fontweight='bold')
+            ax.set_ylabel('Traffic Flow (normalized)', fontweight='bold')
+            ax.legend(fontsize=11)
+            ax.grid(True, alpha=0.3)
+            
+            # Scatter plot with regression line
+            ax = axes[1]
+            ax.scatter(actual, pred, alpha=0.6, s=30, edgecolors='black', linewidth=0.5)
+            
+            # Add perfect prediction line
+            min_val, max_val = actual.min(), actual.max()
+            ax.plot([min_val, max_val], [min_val, max_val], 'r--', lw=2, label='Perfect Prediction', alpha=0.8)
+            
+            # Add regression line
+            z = np.polyfit(actual, pred, 1)
+            p = np.poly1d(z)
+            ax.plot(actual, p(actual), "g-", lw=2, label=f'Fit: y={z[0]:.3f}x+{z[1]:.3f}', alpha=0.8)
+            
+            ax.set_xlabel('Actual Values', fontweight='bold')
+            ax.set_ylabel('Predicted Values', fontweight='bold')
+            ax.set_title('Prediction vs Actual Scatter Plot with Fit Line', fontweight='bold', fontsize=12)
+            ax.legend(fontsize=11)
             ax.grid(True, alpha=0.3)
             
             plt.tight_layout()
