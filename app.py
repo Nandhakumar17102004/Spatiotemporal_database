@@ -9,7 +9,7 @@ from datetime import datetime
 # Import all the model classes from your main code
 # (Paste the synthetic generator, graph builder, physics embedder, and models here)
 # For this example, I'll assume they're in a module called 'traffic_models'
-
+from traffic_models import NaiveBaseline, SpatialRegression, ARIMAModel, ProphetModel
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
@@ -26,7 +26,7 @@ st.set_page_config(
 def show_project_info():
     """Display project problem statement and proposed solution"""
     st.markdown("""
-    # 🚦 Traffic Flow Prediction System - Phase 1
+    # 🚦 Traffic Flow Prediction System 
 
     ## Problem Statement
     
@@ -893,6 +893,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
