@@ -389,59 +389,85 @@ def main():
         colors = ['#d62728' if 'PG-STGNN' in m else '#1f77b4' for m in df_results['Model']]
         
         # 1. Performance Comparison - 4 Subplots
-        st.subheader("1. Performance Metrics Comparison (4-Panel)")
-        
-        fig, axes = plt.subplots(2, 2, figsize=(16, 10))
-        fig.suptitle('Model Performance Comparison', fontsize=16, fontweight='bold')
-        
-        # MAE
-        ax = axes[0, 0]
-        bars = ax.barh(df_results['Model'], df_results['MAE'], color=colors)
-        ax.set_xlabel('MAE', fontweight='bold')
-        ax.set_title('Mean Absolute Error (Lower is Better)', fontweight='bold')
-        ax.grid(axis='x', alpha=0.3)
-        for i, bar in enumerate(bars):
-            width = bar.get_width()
-            ax.text(width, bar.get_y() + bar.get_height()/2, f' {width:.4f}',
-                   ha='left', va='center', fontsize=9)
-        
-        # RMSE
-        ax = axes[0, 1]
-        bars = ax.barh(df_results['Model'], df_results['RMSE'], color=colors)
-        ax.set_xlabel('RMSE', fontweight='bold')
-        ax.set_title('Root Mean Square Error (Lower is Better)', fontweight='bold')
-        ax.grid(axis='x', alpha=0.3)
-        for i, bar in enumerate(bars):
-            width = bar.get_width()
-            ax.text(width, bar.get_y() + bar.get_height()/2, f' {width:.4f}',
-                   ha='left', va='center', fontsize=9)
-        
-        # MAPE
-        ax = axes[1, 0]
-        bars = ax.barh(df_results['Model'], df_results['MAPE'], color=colors)
-        ax.set_xlabel('MAPE (%)', fontweight='bold')
-        ax.set_title('Mean Absolute Percentage Error (Lower is Better)', fontweight='bold')
-        ax.grid(axis='x', alpha=0.3)
-        for i, bar in enumerate(bars):
-            width = bar.get_width()
-            ax.text(width, bar.get_y() + bar.get_height()/2, f' {width:.2f}%',
-                   ha='left', va='center', fontsize=9)
-        
-        # R²
-        ax = axes[1, 1]
-        bars = ax.barh(df_results['Model'], df_results['R²'], color=colors)
-        ax.set_xlabel('R²', fontweight='bold')
-        ax.set_title('R² Score (Higher is Better)', fontweight='bold')
-        ax.set_xlim([-0.1, 1.1])
-        ax.grid(axis='x', alpha=0.3)
-        for i, bar in enumerate(bars):
-            width = bar.get_width()
-            ax.text(width, bar.get_y() + bar.get_height()/2, f' {width:.4f}',
-                   ha='left', va='center', fontsize=9)
-        
-        plt.tight_layout()
-        st.pyplot(fig)
-        st.divider()
+        # Modified visualization code for the 4-panel performance comparison
+fig, axes = plt.subplots(2, 2, figsize=(20, 12))  # Increased figure size
+fig.suptitle('Model Performance Comparison', fontsize=20, fontweight='bold', y=1.02)  # Larger title, adjusted position
+
+# Common style parameters
+bar_color = '#2196F3'  # Professional blue color
+highlight_color = '#FF5722'  # Highlight color for PG-STGNN
+bar_alpha = 0.7
+grid_alpha = 0.2
+text_size = 11
+title_size = 14
+
+# MAE
+ax = axes[0, 0]
+bars = ax.barh(df_results['Model'], df_results['MAE'], 
+               color=[highlight_color if 'PG-STGNN' in m else bar_color for m in df_results['Model']], 
+               alpha=bar_alpha)
+ax.set_xlabel('MAE', fontweight='bold', fontsize=text_size)
+ax.set_title('Mean Absolute Error\n(Lower is Better)', fontweight='bold', fontsize=title_size)
+ax.grid(axis='x', alpha=grid_alpha)
+ax.tick_params(axis='both', labelsize=text_size)
+for i, bar in enumerate(bars):
+    width = bar.get_width()
+    ax.text(width, bar.get_y() + bar.get_height()/2, f' {width:.4f}',
+            ha='left', va='center', fontsize=text_size, fontweight='bold')
+
+# RMSE
+ax = axes[0, 1]
+bars = ax.barh(df_results['Model'], df_results['RMSE'],
+               color=[highlight_color if 'PG-STGNN' in m else bar_color for m in df_results['Model']],
+               alpha=bar_alpha)
+ax.set_xlabel('RMSE', fontweight='bold', fontsize=text_size)
+ax.set_title('Root Mean Square Error\n(Lower is Better)', fontweight='bold', fontsize=title_size)
+ax.grid(axis='x', alpha=grid_alpha)
+ax.tick_params(axis='both', labelsize=text_size)
+for i, bar in enumerate(bars):
+    width = bar.get_width()
+    ax.text(width, bar.get_y() + bar.get_height()/2, f' {width:.4f}',
+            ha='left', va='center', fontsize=text_size, fontweight='bold')
+
+# MAPE
+ax = axes[1, 0]
+bars = ax.barh(df_results['Model'], df_results['MAPE'],
+               color=[highlight_color if 'PG-STGNN' in m else bar_color for m in df_results['Model']],
+               alpha=bar_alpha)
+ax.set_xlabel('MAPE (%)', fontweight='bold', fontsize=text_size)
+ax.set_title('Mean Absolute Percentage Error\n(Lower is Better)', fontweight='bold', fontsize=title_size)
+ax.grid(axis='x', alpha=grid_alpha)
+ax.tick_params(axis='both', labelsize=text_size)
+for i, bar in enumerate(bars):
+    width = bar.get_width()
+    ax.text(width, bar.get_y() + bar.get_height()/2, f' {width:.2f}%',
+            ha='left', va='center', fontsize=text_size, fontweight='bold')
+
+# R²
+ax = axes[1, 1]
+bars = ax.barh(df_results['Model'], df_results['R²'],
+               color=[highlight_color if 'PG-STGNN' in m else bar_color for m in df_results['Model']],
+               alpha=bar_alpha)
+ax.set_xlabel('R²', fontweight='bold', fontsize=text_size)
+ax.set_title('R² Score\n(Higher is Better)', fontweight='bold', fontsize=title_size)
+ax.set_xlim([-0.1, 1.1])
+ax.grid(axis='x', alpha=grid_alpha)
+ax.tick_params(axis='both', labelsize=text_size)
+for i, bar in enumerate(bars):
+    width = bar.get_width()
+    ax.text(width, bar.get_y() + bar.get_height()/2, f' {width:.4f}',
+            ha='left', va='center', fontsize=text_size, fontweight='bold')
+
+# Adjust layout
+plt.tight_layout(pad=3.0)  # Increased padding
+
+# Add a legend
+fig.legend(['Other Models', 'PG-STGNN'], 
+          loc='center right', 
+          bbox_to_anchor=(1.15, 0.5),
+          fontsize=text_size)
+
+st.pyplot(fig)
         
         # 2. Radar Chart
         st.subheader("2. Multi-Metric Performance Radar Chart")
@@ -827,6 +853,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
