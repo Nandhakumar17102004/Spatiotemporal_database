@@ -702,7 +702,7 @@ def main():
             r2_rank = df_results.nlargest(3, 'R²')[['Model', 'R²']]
             for idx, (_, row) in enumerate(r2_rank.iterrows(), 1):
                 st.write(f"{idx}. {row['Model']}: {row['R²']:.4f}")
-        st.header("📊 Model Performance Visualizations")
+        
         
         if 'results' not in st.session_state:
             st.warning("Please run comparison first")
@@ -828,4 +828,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
