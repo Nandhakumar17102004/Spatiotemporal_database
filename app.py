@@ -389,13 +389,14 @@ def main():
         colors = ['#d62728' if 'PG-STGNN' in m else '#1f77b4' for m in df_results['Model']]
         
         # 1. Performance Comparison - 4 Subplots
-        # Modified visualization code with enhanced clarity
-        plt.style.use('seaborn')  # Use seaborn style for better aesthetics
+                # Modified visualization code without seaborn dependency
+        # Clear any existing plots
+        plt.clf()
         
-        fig, axes = plt.subplots(2, 2, figsize=(24, 16))  # Even larger figure size
+        fig, axes = plt.subplots(2, 2, figsize=(24, 16))  # Large figure size
         fig.suptitle('Model Performance Comparison', fontsize=24, fontweight='bold', y=1.05)
         
-        # Enhanced style parameters
+        # Style parameters
         colors = {
             'pg_stgnn': '#FF4B4B',  # Bright red for PG-STGNN
             'other': '#4B89FF',    # Blue for other models
@@ -422,15 +423,17 @@ def main():
                 linewidth=1
             )
             
-            # Enhanced grid
+            # Add grid with custom styling
             ax.grid(True, axis='x', linestyle='--', alpha=0.3, color=colors['grid'])
             
-            # Remove frame except for bottom and left spines
+            # Remove top and right spines
             ax.spines['top'].set_visible(False)
             ax.spines['right'].set_visible(False)
+            ax.spines['left'].set_color(colors['grid'])
+            ax.spines['bottom'].set_color(colors['grid'])
             
-            # Customize axis labels and ticks
-            ax.tick_params(axis='both', labelsize=text_params['model_names'], labelcolor=colors['text'])
+            # Customize ticks
+            ax.tick_params(axis='both', labelsize=text_params['model_names'], colors=colors['text'])
             
             # Add value labels
             for bar in bars:
@@ -446,16 +449,17 @@ def main():
                     color=colors['text']
                 )
             
-            # Enhance title
+            # Set title
             direction = "Higher" if is_higher_better else "Lower"
             ax.set_title(f'{metric}\n({direction} is Better)',
                         fontsize=text_params['title'],
                         fontweight='bold',
-                        pad=20)
+                        pad=20,
+                        color=colors['text'])
             
             return bars
         
-        # Create all four panels with enhanced styling
+        # Create all four panels
         metrics = [
             ('MAE', False),
             ('RMSE', False),
@@ -469,7 +473,7 @@ def main():
             if metric == 'R²':
                 ax.set_xlim(-0.1, 1.1)  # Special limits for R² score
         
-        # Add legend with enhanced styling
+        # Add legend
         legend_elements = [
             plt.Rectangle((0,0),1,1, facecolor=colors['pg_stgnn'], label='PG-STGNN', alpha=0.8),
             plt.Rectangle((0,0),1,1, facecolor=colors['other'], label='Other Models', alpha=0.8)
@@ -480,16 +484,14 @@ def main():
             bbox_to_anchor=(1.15, 0.5),
             fontsize=text_params['title'],
             frameon=True,
-            edgecolor='black',
-            fancybox=True,
-            shadow=True
+            edgecolor='black'
         )
         
-        # Adjust layout with more spacing
+        # Adjust layout
         plt.tight_layout(rect=[0, 0, 0.9, 0.95], h_pad=0.5, w_pad=0.5)
         
-        # Add a background color to the figure
-        fig.patch.set_facecolor('#F8F9FA')
+        # Set figure background color
+        fig.patch.set_facecolor('white')
         for ax in axes.flat:
             ax.set_facecolor('white')
         
@@ -879,6 +881,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
