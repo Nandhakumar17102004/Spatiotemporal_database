@@ -389,83 +389,109 @@ def main():
         colors = ['#d62728' if 'PG-STGNN' in m else '#1f77b4' for m in df_results['Model']]
         
         # 1. Performance Comparison - 4 Subplots
-                # Modified visualization code for the 4-panel performance comparison
-        fig, axes = plt.subplots(2, 2, figsize=(20, 12))  # Increased figure size
-        fig.suptitle('Model Performance Comparison', fontsize=20, fontweight='bold', y=1.02)  # Larger title, adjusted position
+        # Modified visualization code with enhanced clarity
+        plt.style.use('seaborn')  # Use seaborn style for better aesthetics
         
-        # Common style parameters
-        bar_color = '#2196F3'  # Professional blue color
-        highlight_color = '#FF5722'  # Highlight color for PG-STGNN
-        bar_alpha = 0.7
-        grid_alpha = 0.2
-        text_size = 11
-        title_size = 14
+        fig, axes = plt.subplots(2, 2, figsize=(24, 16))  # Even larger figure size
+        fig.suptitle('Model Performance Comparison', fontsize=24, fontweight='bold', y=1.05)
         
-        # MAE
-        ax = axes[0, 0]
-        bars = ax.barh(df_results['Model'], df_results['MAE'], 
-                       color=[highlight_color if 'PG-STGNN' in m else bar_color for m in df_results['Model']], 
-                       alpha=bar_alpha)
-        ax.set_xlabel('MAE', fontweight='bold', fontsize=text_size)
-        ax.set_title('Mean Absolute Error\n(Lower is Better)', fontweight='bold', fontsize=title_size)
-        ax.grid(axis='x', alpha=grid_alpha)
-        ax.tick_params(axis='both', labelsize=text_size)
-        for i, bar in enumerate(bars):
-            width = bar.get_width()
-            ax.text(width, bar.get_y() + bar.get_height()/2, f' {width:.4f}',
-                    ha='left', va='center', fontsize=text_size, fontweight='bold')
+        # Enhanced style parameters
+        colors = {
+            'pg_stgnn': '#FF4B4B',  # Bright red for PG-STGNN
+            'other': '#4B89FF',    # Blue for other models
+            'text': '#2F2F2F',     # Dark gray for text
+            'grid': '#E5E5E5'      # Light gray for grid
+        }
         
-        # RMSE
-        ax = axes[0, 1]
-        bars = ax.barh(df_results['Model'], df_results['RMSE'],
-                       color=[highlight_color if 'PG-STGNN' in m else bar_color for m in df_results['Model']],
-                       alpha=bar_alpha)
-        ax.set_xlabel('RMSE', fontweight='bold', fontsize=text_size)
-        ax.set_title('Root Mean Square Error\n(Lower is Better)', fontweight='bold', fontsize=title_size)
-        ax.grid(axis='x', alpha=grid_alpha)
-        ax.tick_params(axis='both', labelsize=text_size)
-        for i, bar in enumerate(bars):
-            width = bar.get_width()
-            ax.text(width, bar.get_y() + bar.get_height()/2, f' {width:.4f}',
-                    ha='left', va='center', fontsize=text_size, fontweight='bold')
+        text_params = {
+            'model_names': 14,    # Model names font size
+            'values': 12,        # Values font size
+            'title': 18,        # Subplot titles font size
+            'label': 14         # Axis labels font size
+        }
         
-        # MAPE
-        ax = axes[1, 0]
-        bars = ax.barh(df_results['Model'], df_results['MAPE'],
-                       color=[highlight_color if 'PG-STGNN' in m else bar_color for m in df_results['Model']],
-                       alpha=bar_alpha)
-        ax.set_xlabel('MAPE (%)', fontweight='bold', fontsize=text_size)
-        ax.set_title('Mean Absolute Percentage Error\n(Lower is Better)', fontweight='bold', fontsize=title_size)
-        ax.grid(axis='x', alpha=grid_alpha)
-        ax.tick_params(axis='both', labelsize=text_size)
-        for i, bar in enumerate(bars):
-            width = bar.get_width()
-            ax.text(width, bar.get_y() + bar.get_height()/2, f' {width:.2f}%',
-                    ha='left', va='center', fontsize=text_size, fontweight='bold')
+        # Function to create enhanced bars
+        def create_enhanced_bars(ax, data, metric, is_higher_better=False):
+            bars = ax.barh(
+                data['Model'],
+                data[metric],
+                color=[colors['pg_stgnn'] if 'PG-STGNN' in m else colors['other'] for m in data['Model']],
+                alpha=0.8,
+                height=0.6,  # Reduced height for better spacing
+                edgecolor='white',
+                linewidth=1
+            )
+            
+            # Enhanced grid
+            ax.grid(True, axis='x', linestyle='--', alpha=0.3, color=colors['grid'])
+            
+            # Remove frame except for bottom and left spines
+            ax.spines['top'].set_visible(False)
+            ax.spines['right'].set_visible(False)
+            
+            # Customize axis labels and ticks
+            ax.tick_params(axis='both', labelsize=text_params['model_names'], labelcolor=colors['text'])
+            
+            # Add value labels
+            for bar in bars:
+                width = bar.get_width()
+                ax.text(
+                    width * 1.02,  # Slightly offset from bar end
+                    bar.get_y() + bar.get_height()/2,
+                    f'{width:.2f}{"%" if metric == "MAPE" else ""}',
+                    va='center',
+                    ha='left',
+                    fontsize=text_params['values'],
+                    fontweight='bold',
+                    color=colors['text']
+                )
+            
+            # Enhance title
+            direction = "Higher" if is_higher_better else "Lower"
+            ax.set_title(f'{metric}\n({direction} is Better)',
+                        fontsize=text_params['title'],
+                        fontweight='bold',
+                        pad=20)
+            
+            return bars
         
-        # R²
-        ax = axes[1, 1]
-        bars = ax.barh(df_results['Model'], df_results['R²'],
-                       color=[highlight_color if 'PG-STGNN' in m else bar_color for m in df_results['Model']],
-                       alpha=bar_alpha)
-        ax.set_xlabel('R²', fontweight='bold', fontsize=text_size)
-        ax.set_title('R² Score\n(Higher is Better)', fontweight='bold', fontsize=title_size)
-        ax.set_xlim([-0.1, 1.1])
-        ax.grid(axis='x', alpha=grid_alpha)
-        ax.tick_params(axis='both', labelsize=text_size)
-        for i, bar in enumerate(bars):
-            width = bar.get_width()
-            ax.text(width, bar.get_y() + bar.get_height()/2, f' {width:.4f}',
-                    ha='left', va='center', fontsize=text_size, fontweight='bold')
+        # Create all four panels with enhanced styling
+        metrics = [
+            ('MAE', False),
+            ('RMSE', False),
+            ('MAPE', False),
+            ('R²', True)
+        ]
         
-        # Adjust layout
-        plt.tight_layout(pad=3.0)  # Increased padding
+        for (metric, is_higher_better), ax in zip(metrics, axes.flat):
+            bars = create_enhanced_bars(ax, df_results, metric, is_higher_better)
+            
+            if metric == 'R²':
+                ax.set_xlim(-0.1, 1.1)  # Special limits for R² score
         
-        # Add a legend
-        fig.legend(['Other Models', 'PG-STGNN'], 
-                  loc='center right', 
-                  bbox_to_anchor=(1.15, 0.5),
-                  fontsize=text_size)
+        # Add legend with enhanced styling
+        legend_elements = [
+            plt.Rectangle((0,0),1,1, facecolor=colors['pg_stgnn'], label='PG-STGNN', alpha=0.8),
+            plt.Rectangle((0,0),1,1, facecolor=colors['other'], label='Other Models', alpha=0.8)
+        ]
+        fig.legend(
+            handles=legend_elements,
+            loc='center right',
+            bbox_to_anchor=(1.15, 0.5),
+            fontsize=text_params['title'],
+            frameon=True,
+            edgecolor='black',
+            fancybox=True,
+            shadow=True
+        )
+        
+        # Adjust layout with more spacing
+        plt.tight_layout(rect=[0, 0, 0.9, 0.95], h_pad=0.5, w_pad=0.5)
+        
+        # Add a background color to the figure
+        fig.patch.set_facecolor('#F8F9FA')
+        for ax in axes.flat:
+            ax.set_facecolor('white')
         
         st.pyplot(fig)
         
@@ -853,6 +879,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
