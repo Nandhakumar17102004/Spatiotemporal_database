@@ -43,11 +43,7 @@ def show_project_info():
     - Physics-aware modeling of traffic dynamics
     - Real-time adaptability to changing conditions
     
-    **Key Questions:**
-    - Can we predict traffic flow accurately 5-15 minutes ahead?
-    - How much do advanced deep learning models help vs. simple baselines?
-    - Can we optimize signal timing based on predictions?
-    - What's the trade-off between model complexity and performance?
+    
     
     ---
     
@@ -300,7 +296,7 @@ def main():
         layout="wide"
     )
     st.title("🚗 Real-Time Analytics on Spatio-Temporal Vehicle Graphs")
-    st.markdown("Phase 1: Advanced Model Comparison Dashboard")
+    st.markdown(" Advanced Model Comparison Dashboard")
     
     # Sidebar navigation
     page = st.sidebar.radio(
@@ -897,6 +893,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
