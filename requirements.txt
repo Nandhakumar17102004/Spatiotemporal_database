@@ -1,0 +1,10 @@
+torch
+torch-geometric
+scikit-learn
+pandas
+numpy
+matplotlib
+seaborn
+streamlit
+statsmodels
+prophet
