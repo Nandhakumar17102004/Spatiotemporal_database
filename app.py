@@ -28,7 +28,7 @@ st.set_page_config(
 def show_project_info():
     """Display project problem statement and proposed solution"""
     st.markdown("""
-    # 🚦 Traffic Flow Prediction System - Phase 1
+    # 🚦 Traffic Flow Prediction System 
 
     ## Problem Statement
     
@@ -45,11 +45,7 @@ def show_project_info():
     - Physics-aware modeling of traffic dynamics
     - Real-time adaptability to changing conditions
     
-    **Key Questions:**
-    - Can we predict traffic flow accurately 5-15 minutes ahead?
-    - How much do advanced deep learning models help vs. simple baselines?
-    - Can we optimize signal timing based on predictions?
-    - What's the trade-off between model complexity and performance?
+    
     
     ---
     
@@ -297,7 +293,7 @@ def calculate_metrics(predictions, targets):
 # ==================== STREAMLIT APP ====================
 def main():
     st.title("🚦 Traffic Flow Prediction Models Comparison")
-    st.markdown("Phase 1: Model Comparison Dashboard")
+    st.markdown("Model Comparison Dashboard")
     
     # Sidebar navigation
     page = st.sidebar.radio(
