@@ -535,14 +535,19 @@ def main():
         st.divider()
         
         # 3. Error Distribution
+                # Modified Error Distribution Analysis visualization
         st.subheader("3. Error Distribution Analysis")
         
         fig, axes = plt.subplots(2, 2, figsize=(16, 10))
         fig.suptitle('Error Distribution Across Models', fontsize=14, fontweight='bold')
         
+        # Define colors for consistency
+        bar_colors = ['#2196F3' if 'PG-STGNN' not in model else '#FF5722' for model in df_results['Model']]
+        
         # MAE Distribution
         ax = axes[0, 0]
-        ax.bar(range(len(df_results)), df_results['MAE'], color=colors, alpha=0.7, edgecolor='black')
+        ax.bar(range(len(df_results)), df_results['MAE'], 
+               color=bar_colors, alpha=0.7, edgecolor='black', linewidth=1)
         ax.set_xticks(range(len(df_results)))
         ax.set_xticklabels(df_results['Model'], rotation=45, ha='right')
         ax.set_ylabel('MAE', fontweight='bold')
@@ -551,7 +556,8 @@ def main():
         
         # RMSE Distribution
         ax = axes[0, 1]
-        ax.bar(range(len(df_results)), df_results['RMSE'], color=colors, alpha=0.7, edgecolor='black')
+        ax.bar(range(len(df_results)), df_results['RMSE'], 
+               color=bar_colors, alpha=0.7, edgecolor='black', linewidth=1)
         ax.set_xticks(range(len(df_results)))
         ax.set_xticklabels(df_results['Model'], rotation=45, ha='right')
         ax.set_ylabel('RMSE', fontweight='bold')
@@ -560,7 +566,8 @@ def main():
         
         # MAPE Distribution
         ax = axes[1, 0]
-        ax.bar(range(len(df_results)), df_results['MAPE'], color=colors, alpha=0.7, edgecolor='black')
+        ax.bar(range(len(df_results)), df_results['MAPE'], 
+               color=bar_colors, alpha=0.7, edgecolor='black', linewidth=1)
         ax.set_xticks(range(len(df_results)))
         ax.set_xticklabels(df_results['Model'], rotation=45, ha='right')
         ax.set_ylabel('MAPE (%)', fontweight='bold')
@@ -569,17 +576,26 @@ def main():
         
         # R² Distribution
         ax = axes[1, 1]
-        ax.bar(range(len(df_results)), df_results['R²'], color=colors, alpha=0.7, edgecolor='black')
+        ax.bar(range(len(df_results)), df_results['R²'], 
+               color=bar_colors, alpha=0.7, edgecolor='black', linewidth=1)
         ax.set_xticks(range(len(df_results)))
         ax.set_xticklabels(df_results['Model'], rotation=45, ha='right')
         ax.set_ylabel('R²', fontweight='bold')
-        ax.set_title('R² Distribution (Higher is Better)')
+        ax.set_title('R² Distribution')
         ax.grid(axis='y', alpha=0.3)
-        ax.axhline(y=0, color='black', linestyle='-', linewidth=0.8)
+        ax.set_ylim(-0.1, 1.1)  # Set y-axis limits for R² score
         
-        plt.tight_layout()
+        # Add legend
+        legend_elements = [
+            plt.Rectangle((0,0),1,1, facecolor='#2196F3', alpha=0.7, edgecolor='black', label='Other Models'),
+            plt.Rectangle((0,0),1,1, facecolor='#FF5722', alpha=0.7, edgecolor='black', label='PG-STGNN')
+        ]
+        fig.legend(handles=legend_elements, loc='center right', bbox_to_anchor=(1.15, 0.5))
+        
+        # Adjust layout
+        plt.tight_layout(rect=[0, 0, 0.9, 0.95])
+        
         st.pyplot(fig)
-        st.divider()
         
         # 4. Metric Heatmap
         st.subheader("4. Metrics Heatmap")
@@ -881,6 +897,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
