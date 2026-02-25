@@ -1,23 +1,60 @@
-# PG-STGNN Traffic Flow Prediction System
+# Spatiotemporal Database Documentation
 
-The PG-STGNN (Persistence Graph Spatial-Temporal Graph Neural Network) is designed to predict traffic flow using advanced graph neural network techniques. This implementation focuses on using spatial-temporal data from traffic models to generate accurate predictions. The core components of the system include:
+## Installation
 
-## Key Features
-- **Data Ingestion**: Ability to handle large-scale traffic data inputs.
-- **Graph Construction**: Constructs spatial graphs to represent traffic flow.
-- **Temporal Dynamics**: Incorporates temporal patterns to improve prediction accuracy.
-- **Model Training**: Utilizes deep learning libraries for training the neural network.
+To install the Spatiotemporal Database, clone the repository and install the required dependencies:
 
-## Implementation Details in `traffic_models.py`
-- The `traffic_models.py` file contains the main logic for building and training the PG-STGNN model. It includes functions for data preprocessing, model architecture, and evaluation metrics to analyze performance.
+```bash
+git clone https://github.com/Nandhakumar17102004/Spatiotemporal_database.git
+cd Spatiotemporal_database
+pip install -r requirements.txt
+```
 
-## Usage
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/Nandhakumar17102004/Spatiotemporal_database.git
-   ```
-2. Navigate to the project directory and run the `traffic_models.py` script to start predictions.
-3. Refer to the documentation for detailed instructions on parameter settings and model customization.
+## Configuration
 
-## Conclusion
-The PG-STGNN system aims to provide robust traffic flow predictions, enhancing urban mobility solutions through sophisticated data analysis and machine learning techniques.
+You can configure the database settings in the `config.yaml` file. Make sure to input the appropriate database connection details. Below is an example configuration:
+
+```yaml
+database:
+  host: localhost
+  port: 5432
+  user: dbuser
+  password: dbpass
+  database: spatiotemporal_db
+```
+
+## Architecture
+
+The Spatiotemporal Database is designed with a modular architecture, allowing easy scalability and maintenance. The major components include:
+- **API Layer:** Handles incoming requests and sends responses.
+- **Business Logic Layer:** Contains the core application logic.
+- **Data Access Layer:** Interfaces with the database.
+
+## Usage Examples
+
+### Inserting Data
+```python
+from database import Database
+
+db = Database()
+db.insert_data(data)
+```
+
+### Querying Data
+```python
+results = db.query_data(query)
+for result in results:
+    print(result)
+```
+
+## Model Comparison
+
+In this project, various models have been utilized for spatiotemporal data analysis including:
+- **Model A:** Description and performance metrics.
+- **Model B:** Description and performance metrics.
+
+Each model has been compared based on accuracy, speed, and resource consumption. Refer to the `model_comparison.ipynb` file for a detailed analysis.
+
+---
+
+This documentation aims to provide a comprehensive guide for users to understand and utilize the Spatiotemporal Database effectively.
