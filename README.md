@@ -1,49 +1,23 @@
-# Spatiotemporal Database
+# PG-STGNN Traffic Flow Prediction System
 
-## Project Overview
-This project focuses on the development and analysis of a spatiotemporal database system that efficiently handles data varying over space and time. The goal is to provide a robust framework for managing, querying, and analyzing spatiotemporal data in various applications like urban planning, environmental monitoring, and transportation.
+The PG-STGNN (Persistence Graph Spatial-Temporal Graph Neural Network) is designed to predict traffic flow using advanced graph neural network techniques. This implementation focuses on using spatial-temporal data from traffic models to generate accurate predictions. The core components of the system include:
 
-## Features
-- **Data Handling**: Efficient storage and retrieval of spatiotemporal data.
-- **Query Support**: Advanced query capabilities that allow users to filter data based on both spatial and temporal criteria.
-- **Analytics**: Integrated tools for performing complex spatiotemporal analyses.
-- **Visualization**: Tools for visualizing data trends and patterns over time and space.
+## Key Features
+- **Data Ingestion**: Ability to handle large-scale traffic data inputs.
+- **Graph Construction**: Constructs spatial graphs to represent traffic flow.
+- **Temporal Dynamics**: Incorporates temporal patterns to improve prediction accuracy.
+- **Model Training**: Utilizes deep learning libraries for training the neural network.
 
-## Architecture
-The architecture of the spatiotemporal database system consists of three main layers:
-1. **Data Layer**: Responsible for data storage and management, utilizing spatial and temporal indexes for optimization.
-2. **Logic Layer**: Implements the business logic and processing capabilities, including query optimization and data analytics.
-3. **Presentation Layer**: User interface for interacting with the system, providing tools for data input, querying, and visualization.
-
-## Installation
-To install the Spatiotemporal Database system, follow these steps:
-1. Clone the repository:
-    ```bash
-    git clone https://github.com/Nandhakumar17102004/Spatiotemporal_database.git
-    cd Spatiotemporal_database
-    ```
-2. Install the required dependencies:
-    ```bash
-    pip install -r requirements.txt
-    ```
-3. Set up the database:
-    Configure the database settings in `config.py` according to your environment.
-4. Run the application:
-    ```bash
-    python app.py
-    ```
+## Implementation Details in `traffic_models.py`
+- The `traffic_models.py` file contains the main logic for building and training the PG-STGNN model. It includes functions for data preprocessing, model architecture, and evaluation metrics to analyze performance.
 
 ## Usage
-After setting up the application, access the user interface in your web browser at `http://localhost:5000`. Here, you can explore the features of the spatiotemporal database system by adding data, running queries, and visualizing results.
-
-## Model Comparison
-In this project, several models for data analysis were compared, including:
-- **Model A**: Traditional relational model for spatiotemporal data.
-- **Model B**: NoSQL model optimized for flexible data structures.
-- **Model C**: Graph-based model for complex relational data.
-
-## Results
-The performance benchmarks and analysis results demonstrate that the spatiotemporal database system outperforms traditional approaches in terms of query speed and data handling efficiency. Detailed graphs and tables comparing the results are included in the `results` directory.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Nandhakumar17102004/Spatiotemporal_database.git
+   ```
+2. Navigate to the project directory and run the `traffic_models.py` script to start predictions.
+3. Refer to the documentation for detailed instructions on parameter settings and model customization.
 
 ## Conclusion
-The Spatiotemporal Database project showcases a comprehensive approach to managing spatiotemporal data, offering robust features for handling complex datasets and providing valuable insights through efficient data analysis. Further enhancements will focus on scalability and real-time data processing capabilities.
+The PG-STGNN system aims to provide robust traffic flow predictions, enhancing urban mobility solutions through sophisticated data analysis and machine learning techniques.
