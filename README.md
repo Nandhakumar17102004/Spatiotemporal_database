@@ -21,11 +21,4 @@ This framework incorporates physical laws governing traffic dynamics to improve 
 ## Installation
 Instructions on how to install the necessary libraries and dependencies.
 
-## Usage
-Guidelines on how to use the provided scripts and modules for traffic prediction.
 
-## Contribution
-Details on how to contribute to the project.
-
-## License
-Information about the project license.
